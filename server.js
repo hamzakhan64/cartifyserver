@@ -23,7 +23,7 @@ const app = express();
 // Connect Database
 connectDB();
 
-// Add this:
+// MongoDB connection listeners
 const mongoose = require('mongoose');
 mongoose.connection.on('disconnected', () => {
     console.log('⚠️ MongoDB disconnected!');
@@ -32,16 +32,16 @@ mongoose.connection.on('reconnected', () => {
     console.log('✅ MongoDB reconnected!');
 });
 
-// Middleware
-app.use(cors({
+// ✅ CORS config with same options for both middleware and preflight
+const corsOptions = {
     origin: "https://cartify-jet.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
-}));
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ✅ preflight now uses same config
 
-// Handle preflight requests
-app.options("*", cors());
 app.use(express.json());
 
 // Session and Passport middleware
@@ -63,6 +63,7 @@ app.use('/api/orders', orderRoutes);
 app.use(errorMiddleware);
 
 if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000; // ✅ fixed missing PORT variable
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`)
     })
