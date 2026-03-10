@@ -35,7 +35,9 @@ mongoose.connection.on('reconnected', () => {
 // Middleware
 app.use(cors({
     origin: "https://cartify-jet.vercel.app",
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 
