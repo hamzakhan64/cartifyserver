@@ -33,7 +33,10 @@ mongoose.connection.on('reconnected', () => {
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: "https://cartify-jet.vercel.app",
+    credentials: true
+}));
 app.use(express.json());
 
 // Session and Passport middleware
